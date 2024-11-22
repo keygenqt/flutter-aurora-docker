@@ -10,7 +10,7 @@ IMAGE_RAW='flutter-aurora-raw'
 IMAGE_RUN='flutter-aurora-run'
 IMAGE_DONE='flutter-aurora'
 
-# Docker Master Build
+# Docker base build
 docker build $(sed 's/^/--build-arg /' .env | xargs) --no-cache --progress plain --tag $IMAGE_RAW .
 
 # Run container with privileged
@@ -48,10 +48,12 @@ echo
 echo 'Save state container...'
 docker commit $IMAGE_RUN $IMAGE_DONE
 
+# Stop with auto remove container
 echo
 echo 'Stop container...'
 docker container stop $IMAGE_RUN
 
+# Remove raw image, he is no longer needed
 echo
 echo 'Remove raw image...'
 docker rmi -f $IMAGE_RAW
