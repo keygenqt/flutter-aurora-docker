@@ -2,7 +2,7 @@
 
 Docker contains [Aurora CLI](https://keygenqt.github.io/aurora-cli/), [Aurora PSDK](https://developer.auroraos.ru/doc/sdk/psdk), [Flutter for Aurora OS](https://omprussia.gitlab.io/flutter/flutter/). Allows you to build Flutter applications in any environment that has Docker. You can build the image by running the create.sh script. Building the image requires ~35Gb, I hope you don't have a MacBook and have plenty of space. This is a joke, a MacBook should do.
 
-![Preview](https://raw.githubusercontent.com/keygenqt/flutter-aurora-docker/refs/heads/main/preview-light.png)
+![Preview](https://raw.githubusercontent.com/keygenqt/flutter-aurora-docker/refs/heads/main/data/preview-light.png)
 
 Build on Linux:
 
