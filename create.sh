@@ -30,15 +30,17 @@ containerExec "sudo rm -rf ~/Downloads/*"
 containerExec "flutter config --enable-aurora-devices"
 containerExec "flutter config --aurora-psdk-dir=/home/${USER}/AuroraPlatformSDK-${PSDK}/sdks/aurora_psdk"
 
-# Check installed
+# Check installed Aurora CLI
 echo
 echo '######################## Aurora CLI'
 containerExec "python3 aurora-cli-$CLI.pyz"
 
+# Check installed Flutter
 echo
 echo '######################## Aurora Flutter'
 containerExec 'flutter doctor'
 
+# Check installed PSDK
 echo
 echo '######################## Aurora PSDK'
 containerExec '$PSDK_DIR/sdk-chroot sdk-assistant list'
