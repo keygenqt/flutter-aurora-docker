@@ -35,7 +35,7 @@ RUN sudo apt install -y \
 # RUN sudo apt install python3-pip -y
 # RUN python3 -m pip install --upgrade setuptools --break-system-packages
 # RUN python3 -m pip install aurora-cli --break-system-packages
-# ENV LANG="ru_RU"
+# ENV LANG="en_EN"
 # ENV PATH="/home/${USER}/.local/bin:$PATH"
 # RUN aurora-cli --version
 
