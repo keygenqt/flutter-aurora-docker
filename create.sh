@@ -53,7 +53,7 @@ echo
 echo 'Stop container...'
 docker container stop $IMAGE_RUN
 
-# Remove raw image, he is no longer needed
+# Remove raw image, it is no longer needed
 echo
 echo 'Remove raw image...'
 docker rmi -f $IMAGE_RAW
