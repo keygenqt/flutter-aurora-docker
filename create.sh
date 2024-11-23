@@ -1,5 +1,7 @@
 #!/bin/sh
 
+export DOCKER_DEFAULT_PLATFORM=linux/amd64
+
 # Load .env
 USER=$(sed 's/USER=//' .env | grep '=' -v)
 CLI=$(sed 's/CLI=//' .env | grep '=' -v)
@@ -29,21 +31,6 @@ containerExec "sudo rm -rf ~/Downloads/*"
 # Configure Flutter after install PSDK.
 containerExec "flutter config --enable-aurora-devices"
 containerExec "flutter config --aurora-psdk-dir=/home/${USER}/AuroraPlatformSDK-${PSDK}/sdks/aurora_psdk"
-
-# Check installed Aurora CLI
-echo
-echo '######################## Aurora CLI'
-containerExec "python3 aurora-cli-$CLI.pyz"
-
-# Check installed Flutter
-echo
-echo '######################## Aurora Flutter'
-containerExec 'flutter doctor'
-
-# Check installed PSDK
-echo
-echo '######################## Aurora PSDK'
-containerExec '$PSDK_DIR/sdk-chroot sdk-assistant list'
 
 # Save container
 echo

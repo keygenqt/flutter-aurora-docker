@@ -18,7 +18,7 @@ USER ${USER}
 ENV USER=${USER}
 WORKDIR /home/${USER}
 
-# Install dependencies aurora-cli
+# Install dependencies
 RUN sudo apt install -y \
     git \
     git-lfs \
@@ -27,31 +27,26 @@ RUN sudo apt install -y \
     tar \
     unzip \
     bzip2 \
-    ffmpeg \
-    clang-format \
-    gdb-multiarch
+    clang-format
 
-# Install latest aurora-cli from pip
+# Install latest Aurora CLI from pip
 # RUN sudo apt install python3-pip -y
 # RUN python3 -m pip install --upgrade setuptools --break-system-packages
 # RUN python3 -m pip install aurora-cli --break-system-packages
 # ENV LANG="en_EN"
 # ENV PATH="/home/${USER}/.local/bin:$PATH"
-# RUN aurora-cli --version
 
-# Install pyz
+# Install pyz Aurora CLI from GitHub
 RUN wget https://github.com/keygenqt/aurora-cli/releases/download/${CLI}/aurora-cli-${CLI}.pyz
 ENV LANG="en_EN"
 RUN sudo apt install python3-pip -y
 RUN python3 -m pip install shiv --break-system-packages
-RUN python3 aurora-cli-${CLI}.pyz --version
 
-# Install flutter
+# Install Flutter for Aurora OS
 RUN python3 aurora-cli-${CLI}.pyz api --route="/flutter/install?version=${FLUTTER}"
 ENV PATH="/home/${USER}/.local/opt/flutter-${FLUTTER}/bin:$PATH"
-RUN mkdir -p "/home/${USER}/.config/flutter"
-RUN flutter --version
+RUN flutter precache --aurora --force
 
-# Download psdk
+# Download PSDK, preparing for installation
 RUN python3 aurora-cli-${CLI}.pyz api --route="/psdk/download?version=${PSDK}"
 ENV PSDK_DIR="/home/${USER}/AuroraPlatformSDK-${PSDK}/sdks/aurora_psdk"
