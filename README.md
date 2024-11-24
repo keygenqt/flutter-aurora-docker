@@ -16,7 +16,7 @@ chmod +x ./create.sh
 Run image:
 
 ```shell
-docker run --rm --name flutter-aurora-(alpine|ubuntu) -itd --privileged flutter-aurora
+docker run --rm --name flutter-aurora -itd --privileged flutter-aurora-(alpine|ubuntu)
 ```
 
 Check:
