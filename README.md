@@ -16,13 +16,13 @@ chmod +x ./create.sh
 Run image:
 
 ```shell
-docker run --rm --name flutter-aurora -itd --privileged flutter-aurora
+docker run --rm --name flutter-aurora-(alpine|ubuntu) -itd --privileged flutter-aurora
 ```
 
 Check:
 
 ```shell
-docker exec -it flutter-aurora /bin/bash -c 'python3 aurora-cli-3.2.7.pyz'
+docker exec -it flutter-aurora /bin/bash -c 'aurora-cli'
 docker exec -it flutter-aurora /bin/bash -c 'flutter doctor'
 docker exec -it flutter-aurora /bin/bash -c '$PSDK_DIR/sdk-chroot sdk-assistant list'
 ```

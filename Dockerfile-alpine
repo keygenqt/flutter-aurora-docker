@@ -1,0 +1,70 @@
+FROM alpine:3.20.3
+
+# From .env
+ARG USER
+ARG CLI
+ARG PSDK
+ARG FLUTTER
+
+# Configure repos
+RUN sed -i 's/#\(.*\/community\)/\1/' /etc/apk/repositories
+
+# Install bash dependencies
+RUN apk update
+RUN apk add sudo bash
+
+# Add config sudoers for check Flutter
+RUN chmod 755 /etc/sudoers.d
+RUN printf '\n\
+'${USER}' ALL=(ALL) NOPASSWD: /home/'${USER}'/AuroraPlatformSDK-'${PSDK}'/sdks/aurora_psdk/sdk-chroot\n\
+Defaults!/home/'${USER}'/AuroraPlatformSDK-'${PSDK}'/sdks/aurora_psdk/sdk-chroot env_keep += "SSH_AGENT_PID SSH_AUTH_SOCK"\n\
+' >> /etc/sudoers.d/sdk-chroot
+RUN printf '\n\
+'${USER}' ALL=(ALL) NOPASSWD: /home/'${USER}'/AuroraPlatformSDK-'${PSDK}'/sdks/aurora_psdk\n\
+Defaults!/home/'${USER}'/AuroraPlatformSDK-'${PSDK}'/sdks/aurora_psdk env_keep += "SSH_AGENT_PID SSH_AUTH_SOCK"\n\
+' >> /etc/sudoers.d/mer-sdk-chroot
+
+# Add user
+RUN adduser --disabled-password --gecos '' ${USER}
+RUN echo "${USER} ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/${USER}
+
+# Set user
+USER ${USER}
+ENV USER=${USER}
+WORKDIR /home/${USER}
+
+# Install dependencies
+RUN sudo apk add \
+    # PSDK
+    setarch \
+    findutils \
+    # Aurora CLI
+    git \
+    git-lfs \
+    openssh \
+    curl \
+    tar \
+    unzip \
+    bzip2 \
+    clang-extra-tools
+
+# Install Aurora CLI
+ENV LANG="en_US"
+RUN sudo apk add python3 py-pip libc6-compat
+RUN python3 -m pip install --upgrade setuptools --break-system-packages
+RUN python3 -m pip install aurora-cli==${CLI} --break-system-packages
+ENV PATH="/home/${USER}/.local/bin:$PATH"
+
+# Download PSDK, preparing for installation
+# TODO: In alpine the internet sometimes fails
+RUN test $(aurora-cli api --route="/psdk/download?version=${PSDK}" | grep "code" | tail -n 1 | xargs | sed 's/,//g' | sed 's/code: //g') -eq 200 || exit 1
+ENV PSDK_DIR="/home/${USER}/AuroraPlatformSDK-${PSDK}/sdks/aurora_psdk"
+
+# Install Flutter for Aurora OS
+RUN test $(aurora-cli api --route="/flutter/install?version=${FLUTTER}" | grep "code" | tail -n 1 | xargs | sed 's/,//g' | sed 's/code: //g') -eq 200 || exit 1
+ENV PATH="/home/${USER}/.local/opt/flutter-${FLUTTER}/bin:$PATH"
+RUN flutter precache --aurora --force
+RUN printf '{\n\
+    "enable-aurora-devices": true,\n\
+    "aurora-psdk-dir": "/home/'${USER}'/AuroraPlatformSDK-'${PSDK}'/sdks/aurora_psdk"\n\
+}' >> /home/${USER}/.config/flutter/settings
